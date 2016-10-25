@@ -12,6 +12,9 @@ import com.miracle9.lottery.entity.LotteryLog;
 
 @Service
 public class LotteryLogService {
+	/**
+	 * 中奖缓存
+	 */
 	public static Map<String, Boolean> awardCacheMap = new ConcurrentHashMap<>();
 
 	@Autowired

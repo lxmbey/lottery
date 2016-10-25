@@ -81,6 +81,7 @@ public class LotteryController {
 
 			// 保存到数据库
 			lotteryLogService.add(new LotteryLog(openId, awardType));
+			LotteryLogService.awardCacheMap.put(openId, true);
 			return gson.toJson(result);
 		}
 	}
