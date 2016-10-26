@@ -53,18 +53,16 @@ public class LotteryController {
 
 	// 抽奖
 	@ResponseBody
-	@RequestMapping("/getResult")
+	@RequestMapping(value = "/getResult", produces = "text/html;charset=UTF-8")
 	public String getResult(String openId) {
 		// openId授权验证
-		// if (!AuthorizeLogService.openidCacheMap.containsKey(openId)) {
-		// LotteryResult result = new LotteryResult(0, -1, new int[6], "未授权用户");
-		// return gson.toJson(result);
-		// }
+		if (!AuthorizeLogService.openidCacheMap.containsKey(openId)) {
+			LotteryResult result = new LotteryResult(0, -1, new int[6], "未授权用户");
+			return gson.toJson(result);
+		}
 		int awardType;
 		int hour = TextUtil.getCurrentHour();
-		if (hour < 9 || hour > 18) {
-			awardType = AwardType.NOT.getValue();
-		} else if (LotteryLogService.awardCacheMap.containsKey(openId)) {// 中过奖了
+		if (hour < 9 || hour > 18 || LotteryLogService.awardCacheMap.containsKey(openId) || !isCanDraw()) {
 			awardType = AwardType.NOT.getValue();
 		} else {
 			awardType = gameController.draw();
@@ -86,9 +84,13 @@ public class LotteryController {
 		}
 	}
 
+	private boolean isCanDraw() {
+		return TextUtil.isBetween(gameConfig.begin, gameConfig.end);
+	}
+
 	// 上传联系方式
 	@ResponseBody
-	@RequestMapping("/uploadInfo")
+	@RequestMapping(value = "/uploadInfo", produces = "text/html;charset=UTF-8")
 	public String uploadInfo(String openId, String name, String phone, String cardId) {
 		LotteryLog lottery = lotteryLogService.getByOpenId(openId);
 		Result result = null;

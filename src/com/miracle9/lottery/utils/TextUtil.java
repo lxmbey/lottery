@@ -68,4 +68,27 @@ public class TextUtil {
 		Calendar c = Calendar.getInstance();
 		return c.get(Calendar.HOUR_OF_DAY);
 	}
+	
+	/**
+	 * 当前是否在指定时间范围内
+	 * 
+	 * @param begin
+	 * @param end
+	 * @return
+	 */
+	public static boolean isBetween(Date begin, Date end) {
+		return isBetween(Calendar.getInstance().getTime(), begin, end);
+	}
+
+	/**
+	 * 指定时间是否在两个时间点之间
+	 * 
+	 * @param checkPoint
+	 * @param begin
+	 * @param end
+	 * @return
+	 */
+	public static boolean isBetween(Date checkPoint, Date begin, Date end) {
+		return checkPoint.getTime() > begin.getTime() && checkPoint.getTime() < end.getTime();
+	}
 }

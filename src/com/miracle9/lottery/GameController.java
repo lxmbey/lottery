@@ -79,7 +79,7 @@ public class GameController {
 	}
 
 	private boolean isFirstDay() {
-		return TextUtil.isSameDay(TextUtil.dateformat(gameConfig.getBeginDate()), new Date());
+		return TextUtil.isSameDay(gameConfig.begin, new Date());
 	}
 
 	/**

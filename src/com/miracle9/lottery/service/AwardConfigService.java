@@ -26,12 +26,12 @@ public class AwardConfigService {
 		List<AwardConfig> list = baseDao.getList(AwardConfig.class, "from AwardConfig");
 		for (AwardConfig c : list) {
 			if (c.getFirstDayNum() > 0) {
-				c.setFirstDayinterval(c.getHourNum() * 60 * 60 / c.getFirstDayNum());
+				c.setFirstDayinterval(c.getHourNum() * 60 * 60 * 1000 / c.getFirstDayNum());
 			} else {
 				c.setFirstDayinterval(Long.MAX_VALUE);
 			}
 			if (c.getOtherDayNum() > 0) {
-				c.setOtherDayinterval(c.getHourNum() * 60 * 60 / c.getOtherDayNum());
+				c.setOtherDayinterval(c.getHourNum() * 60 * 60 * 1000 / c.getOtherDayNum());
 			} else {
 				c.setOtherDayinterval(Long.MAX_VALUE);
 			}

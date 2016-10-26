@@ -1,10 +1,15 @@
 package com.miracle9.lottery;
 
+import java.util.Date;
+
 public class GameConfig {
 	private String beginDate;
 	private String endDate;
 	private String appId;
 	private String appSecret;
+	
+	public Date begin;
+	public Date end;
 
 	public String getBeginDate() {
 		return beginDate;
