@@ -9,8 +9,6 @@ public class SignResult extends Result {
 	public String noncestr;
 	public String appId;
 
-	public String jsapiTicket;
-
 	public SignResult(int success, String message, String signature, long timestamp, String noncestr, String appId) {
 		super(success, message);
 		this.signature = signature;

@@ -168,7 +168,6 @@ public class LotteryController {
 			LogManager.error(e);
 		}
 		SignResult sr = new SignResult(1, "", signature, timestamp, nonceStr, gameConfig.getAppId());
-		sr.jsapiTicket = ticket.value;
 		return gson.toJson(sr);
 	}
 
