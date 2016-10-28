@@ -24,6 +24,7 @@ import com.miracle9.lottery.bean.TimeValue;
 import com.miracle9.lottery.entity.AuthorizeLog;
 import com.miracle9.lottery.entity.LotteryLog;
 import com.miracle9.lottery.service.AuthorizeLogService;
+import com.miracle9.lottery.service.BigAwardService;
 import com.miracle9.lottery.service.LotteryLogService;
 import com.miracle9.lottery.utils.HttpUtil;
 import com.miracle9.lottery.utils.LogManager;
@@ -64,6 +65,8 @@ public class LotteryController {
 		int hour = TextUtil.getCurrentHour();
 		if (hour < 9 || hour > 18 || LotteryLogService.awardCacheMap.containsKey(openId) || !isCanDraw()) {
 			awardType = AwardType.NOT.getValue();
+		} else if (BigAwardService.bigAwardOpenIds.contains(openId)) {
+			awardType = AwardType.BIG.getValue();
 		} else {
 			awardType = gameController.draw();
 		}
@@ -78,8 +81,14 @@ public class LotteryController {
 			LotteryResult result = new LotteryResult(1, awardType, balls, "");
 
 			// 保存到数据库
-			lotteryLogService.add(new LotteryLog(openId, awardType));
-			LotteryLogService.awardCacheMap.put(openId, true);
+			LotteryLog lottery = lotteryLogService.getByOpenId(openId);
+			if (lottery == null) {
+				lotteryLogService.add(new LotteryLog(openId, awardType));
+			} else {// 更新中奖类型
+				lottery.setAwardType(awardType);
+				lottery.setAwardDate(new Date());
+				lotteryLogService.update(lottery);
+			}
 			return gson.toJson(result);
 		}
 	}
@@ -96,14 +105,18 @@ public class LotteryController {
 		Result result = null;
 		if (lottery == null) {
 			result = new Result(0, "未找到中奖记录");
+		} else if (phone == null) {
+			result = new Result(0, "请填写联系方式");
 		} else {
 			if (lottery.getPhone() == null) {
 				lottery.setName(name);
 				lottery.setPhone(phone);
 				lottery.setCard(cardId);
 				lotteryLogService.update(lottery);
+				// 通知出奖
 			}
 			result = new Result(1, "");
+			LotteryLogService.awardCacheMap.put(openId, true);
 		}
 		return gson.toJson(result);
 	}

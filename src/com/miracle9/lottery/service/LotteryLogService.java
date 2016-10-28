@@ -35,7 +35,9 @@ public class LotteryLogService {
 	public void loadCache() {
 		List<LotteryLog> logs = baseDao.getList(LotteryLog.class, "from LotteryLog");
 		for (LotteryLog l : logs) {
-			awardCacheMap.put(l.getOpenId(), true);
+			if (l.getPhone() != null) {
+				awardCacheMap.put(l.getOpenId(), true);
+			}
 		}
 	}
 }
