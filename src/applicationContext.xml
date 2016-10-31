@@ -86,7 +86,7 @@
 	</aop:config>
 
 	<bean class="com.miracle9.lottery.GameConfig" id="gameConfig">
-		<property name="beginDate" value="2016-11-02"></property>
+		<property name="beginDate" value="2016-10-02"></property>
 		<property name="endDate" value="2016-11-09"></property>
 		<property name="appId" value="xx"></property>
 		<property name="appSecret" value="xx"></property>

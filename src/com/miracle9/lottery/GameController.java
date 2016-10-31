@@ -78,6 +78,26 @@ public class GameController {
 		return -1;
 	}
 
+	/**
+	 * 归还未填写联系方式的奖项
+	 * 
+	 * @param awardType
+	 */
+	public synchronized void repayAward(int awardType) {
+		for (AwardConfig w : AwardConfigService.awardMap.values()) {
+			if (w.getAwardType() != awardType) {
+				continue;
+			}
+			Long time = AwardConfigService.awardTime.get(w.getAwardType());
+			if (isFirstDay()) {
+				AwardConfigService.awardTime.put(w.getAwardType(), time - w.getFirstDayinterval());
+			} else {
+				AwardConfigService.awardTime.put(w.getAwardType(), time - w.getOtherDayinterval());
+			}
+			break;
+		}
+	}
+
 	private boolean isFirstDay() {
 		return TextUtil.isSameDay(gameConfig.begin, new Date());
 	}

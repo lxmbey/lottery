@@ -85,9 +85,14 @@ public class LotteryController {
 			if (lottery == null) {
 				lotteryLogService.add(new LotteryLog(openId, awardType));
 			} else {// 更新中奖类型
-				lottery.setAwardType(awardType);
-				lottery.setAwardDate(new Date());
-				lotteryLogService.update(lottery);
+				int oldAwardType = lottery.getAwardType();
+				if (oldAwardType != awardType) {
+					lottery.setAwardType(awardType);
+					lottery.setAwardDate(new Date());
+					lotteryLogService.update(lottery);
+				}
+				// 上次中奖还回去
+				gameController.repayAward(oldAwardType);
 			}
 			return gson.toJson(result);
 		}
