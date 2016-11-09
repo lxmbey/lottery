@@ -16,14 +16,16 @@ public class AuthorizeLog {
 	@Column(nullable = false, unique = true)
 	private String openId;
 	private Date authorizeDate;
+	private String nickname;
 
 	public AuthorizeLog() {
 
 	}
 
-	public AuthorizeLog(String openId, Date authorizeDate) {
+	public AuthorizeLog(String openId, Date authorizeDate, String nickname) {
 		this.openId = openId;
 		this.authorizeDate = authorizeDate;
+		this.nickname = nickname;
 	}
 
 	public int getId() {
@@ -48,6 +50,14 @@ public class AuthorizeLog {
 
 	public void setAuthorizeDate(Date authorizeDate) {
 		this.authorizeDate = authorizeDate;
+	}
+
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
 	}
 
 }

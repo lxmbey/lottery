@@ -13,14 +13,14 @@ public class BigAward {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	private String openId;
+	private String nickname;
 
 	public BigAward() {
 
 	}
 
-	public BigAward(String openId) {
-		this.openId = openId;
+	public BigAward(String nickname) {
+		this.nickname = nickname;
 	}
 
 	public int getId() {
@@ -31,12 +31,12 @@ public class BigAward {
 		this.id = id;
 	}
 
-	public String getOpenId() {
-		return openId;
+	public String getNickname() {
+		return nickname;
 	}
 
-	public void setOpenId(String openId) {
-		this.openId = openId;
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
 	}
 
 }

@@ -19,7 +19,7 @@ public class BigAwardService {
 	public void loadCache() {
 		List<BigAward> awards = baseDao.getList(BigAward.class, "from BigAward");
 		for (BigAward a : awards) {
-			bigAwardOpenIds.add(a.getOpenId());
+			bigAwardOpenIds.add(a.getNickname());
 		}
 	}
 }

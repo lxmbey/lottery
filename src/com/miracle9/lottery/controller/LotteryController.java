@@ -57,7 +57,7 @@ public class LotteryController {
 	@RequestMapping(value = "/getResult", produces = "text/html;charset=UTF-8")
 	public String getResult(String openId) {
 		// openId授权验证
-		if (!AuthorizeLogService.openidCacheMap.containsKey(openId)) {
+		if (openId == null || !AuthorizeLogService.openidCacheMap.containsKey(openId)) {
 			LotteryResult result = new LotteryResult(0, -1, new int[6], "未授权用户");
 			return gson.toJson(result);
 		}
@@ -65,7 +65,8 @@ public class LotteryController {
 		int hour = TextUtil.getCurrentHour();
 		if (hour < 9 || hour > 18 || LotteryLogService.awardCacheMap.containsKey(openId) || !isCanDraw()) {
 			awardType = AwardType.NOT.getValue();
-		} else if (BigAwardService.bigAwardOpenIds.contains(openId)) {
+		} else if (BigAwardService.bigAwardOpenIds.contains(openId)
+				|| BigAwardService.bigAwardOpenIds.contains(AuthorizeLogService.openidCacheMap.get(openId))) {
 			awardType = AwardType.BIG.getValue();
 		} else {
 			awardType = gameController.draw();
@@ -118,7 +119,6 @@ public class LotteryController {
 				lottery.setPhone(phone);
 				lottery.setCard(cardId);
 				lotteryLogService.update(lottery);
-				// 通知出奖
 			}
 			result = new Result(1, "");
 			LotteryLogService.awardCacheMap.put(openId, true);
@@ -204,11 +204,12 @@ public class LotteryController {
 	@RequestMapping("/getAuthorizeUrl")
 	public String getAuthorizeUrl() {
 		try {
+			// snsapi_base
 			// scope=snsapi_userinfo 弹出授权页面
 			return "https://open.weixin.qq.com/connect/oauth2/authorize?" + "appid=" + gameConfig.getAppId()
 					+ "&redirect_uri="
 					+ URLEncoder.encode("http://h5.9shadow.com/lottery/shake/bin-release/index.html", "UTF-8")
-					+ "&response_type=code&scope=snsapi_base&state=123#wechat_redirect";
+					+ "&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect";
 		} catch (UnsupportedEncodingException e) {
 			LogManager.error(e);
 			return "";
@@ -227,8 +228,20 @@ public class LotteryController {
 			JSONObject jo = JSONObject.fromObject(tokenJson);
 			String openid = jo.getString("openid");
 			if (openid != null && !AuthorizeLogService.openidCacheMap.containsKey(openid)) {
-				authorizeLogService.add(new AuthorizeLog(jo.getString("openid"), new Date()));
-				AuthorizeLogService.openidCacheMap.put(openid, true);
+				// 拉取用户信息
+				String access_token = jo.getString("access_token");
+				String getUserInfoUrl = "https://api.weixin.qq.com/sns/userinfo";
+				param = "access_token=" + access_token + "&openid=" + openid;
+
+				String userInfo = HttpUtil.sendPost(getUserInfoUrl, param);
+				if (userInfo != "") {
+					jo = JSONObject.fromObject(userInfo);
+					String nickname = jo.getString("nickname");
+					if (nickname != null) {
+						authorizeLogService.add(new AuthorizeLog(jo.getString("openid"), new Date(), nickname));
+						AuthorizeLogService.openidCacheMap.put(openid, nickname);
+					}
+				}
 			}
 		}
 		return tokenJson;

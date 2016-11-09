@@ -13,9 +13,9 @@ import com.miracle9.lottery.entity.AuthorizeLog;
 @Service
 public class AuthorizeLogService {
 	/**
-	 * 授权过的openid缓存
+	 * 授权过的openid->nickname缓存
 	 */
-	public static Map<String, Boolean> openidCacheMap = new ConcurrentHashMap<>();
+	public static Map<String, String> openidCacheMap = new ConcurrentHashMap<>();
 
 	@Autowired
 	private BaseDao baseDao;
@@ -27,7 +27,7 @@ public class AuthorizeLogService {
 	public void loadCache() {
 		List<AuthorizeLog> logs = baseDao.getList(AuthorizeLog.class, "from AuthorizeLog");
 		for (AuthorizeLog l : logs) {
-			openidCacheMap.put(l.getOpenId(), true);
+			openidCacheMap.put(l.getOpenId(), l.getNickname());
 		}
 	}
 }
