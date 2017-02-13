@@ -8,7 +8,6 @@ import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.miracle9.lottery.entity.AwardConfig;
 import com.miracle9.lottery.service.AwardConfigService;
 import com.miracle9.lottery.utils.TextUtil;
 
@@ -24,7 +23,7 @@ public class GameController {
 	 * 开奖类型
 	 */
 	public enum AwardType {
-		NOT(0),TWO(1), FIVE(2);
+		NOT(0), TWO(1), FIVE(2);
 		private int value;
 
 		private AwardType(int value) {
@@ -62,7 +61,7 @@ public class GameController {
 	 */
 	public synchronized int draw() {
 		long interval = getInterval();
-		if(interval == 0){
+		if (interval == 0) {
 			return AwardType.NOT.value;
 		}
 		if (System.currentTimeMillis() - AwardConfigService.awardTime >= interval) {
@@ -71,33 +70,34 @@ public class GameController {
 		}
 		return AwardType.NOT.value;
 	}
-	
-	public int randomAward(){
-		int i = 92;
-		if(TextUtil.random.nextInt(i) <2){
+
+	public int randomAward() {
+		int i = 100;
+		if (TextUtil.random.nextInt(i) < 6) {
 			return AwardType.FIVE.value;
 		}
 		return AwardType.TWO.value;
 	}
-	
+
 	/**
 	 * 获取出奖间隔
+	 * 
 	 * @return
 	 */
-	private long getInterval(){
+	private long getInterval() {
 		int hour = TextUtil.getCurrentHour();
 		long interval = 0;
 		if (isFirstDay()) {
-			if(hour>=9 && hour<11){
-				interval = 20000;
-			}else if(hour>=11&&hour<23){
-				interval = 6000;
+			if (hour >= 9 && hour < 11) {
+				interval = 18000;
+			} else if (hour >= 11 && hour < 23) {
+				interval = 7500;
 			}
 		} else {
-			if(hour>=9 && hour <10){
-				interval = 15000;
-			}else if(hour>=10&&hour<15){
-				interval = 8333;
+			if (hour >= 9 && hour < 11) {
+				interval = 30000;
+			} else if (hour >= 10 && hour < 15) {
+				interval = 12000;
 			}
 		}
 		return interval;

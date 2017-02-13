@@ -27,6 +27,10 @@ public class LotteryLogService {
 	public LotteryLog getByOpenId(String openId) {
 		return baseDao.getByField(LotteryLog.class, "from LotteryLog where openId = ?", openId);
 	}
+	
+	public LotteryLog getByPhone(String phone) {
+		return baseDao.getByField(LotteryLog.class, "from LotteryLog where phone = ?", phone);
+	}
 
 	public void update(LotteryLog log) {
 		baseDao.update(log);
