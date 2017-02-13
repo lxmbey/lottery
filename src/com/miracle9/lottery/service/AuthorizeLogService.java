@@ -15,7 +15,7 @@ public class AuthorizeLogService {
 	/**
 	 * 授权过的openid->nickname缓存
 	 */
-	public static Map<String, String> openidCacheMap = new ConcurrentHashMap<>();
+	public static Map<String, AuthorizeLog> openidCacheMap = new ConcurrentHashMap<>();
 
 	@Autowired
 	private BaseDao baseDao;
@@ -23,11 +23,15 @@ public class AuthorizeLogService {
 	public void add(AuthorizeLog log) {
 		baseDao.add(log);
 	}
+	
+	public void update(AuthorizeLog log){
+		baseDao.update(log);
+	}
 
 	public void loadCache() {
 		List<AuthorizeLog> logs = baseDao.getList(AuthorizeLog.class, "from AuthorizeLog");
 		for (AuthorizeLog l : logs) {
-			openidCacheMap.put(l.getOpenId(), l.getNickname());
+			openidCacheMap.put(l.getOpenId(), l);
 		}
 	}
 }

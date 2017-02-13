@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import com.miracle9.lottery.service.AuthorizeLogService;
 import com.miracle9.lottery.service.AwardConfigService;
-import com.miracle9.lottery.service.BigAwardService;
 import com.miracle9.lottery.service.LotteryLogService;
 import com.miracle9.lottery.utils.TextUtil;
 
@@ -19,7 +18,6 @@ public class MyApplicationContext implements ApplicationContextAware {
 		ctx.getBean(AwardConfigService.class).loadAllConfig();
 		ctx.getBean(AuthorizeLogService.class).loadCache();
 		ctx.getBean(LotteryLogService.class).loadCache();
-		ctx.getBean(BigAwardService.class).loadCache();
 		
 		GameConfig gameConfig = ctx.getBean(GameConfig.class);
 		gameConfig.begin = TextUtil.dateformat(gameConfig.getBeginDate());

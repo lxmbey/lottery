@@ -17,7 +17,7 @@ public class AwardConfigService {
 	/**
 	 * 开奖时间
 	 */
-	public static Map<Integer, Long> awardTime = new HashMap<>();
+	public static Long awardTime;
 
 	@Autowired
 	private BaseDao baseDao;
@@ -37,8 +37,8 @@ public class AwardConfigService {
 			}
 			awardMap.put(c.getAwardType(), c);
 
-			// 初始化开奖时间
-			awardTime.put(c.getAwardType(), System.currentTimeMillis());
 		}
+		// 初始化开奖时间
+		awardTime  = System.currentTimeMillis();
 	}
 }

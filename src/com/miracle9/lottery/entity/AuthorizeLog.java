@@ -17,15 +17,18 @@ public class AuthorizeLog {
 	private String openId;
 	private Date authorizeDate;
 	private String nickname;
+	private int awardNum = 3;
+	private Date refreshDate;
 
 	public AuthorizeLog() {
 
 	}
 
-	public AuthorizeLog(String openId, Date authorizeDate, String nickname) {
+	public AuthorizeLog(String openId, Date authorizeDate, String nickname, int awardNum) {
 		this.openId = openId;
 		this.authorizeDate = authorizeDate;
 		this.nickname = nickname;
+		this.awardNum = awardNum;
 	}
 
 	public int getId() {
@@ -58,6 +61,22 @@ public class AuthorizeLog {
 
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
+	}
+
+	public int getAwardNum() {
+		return awardNum;
+	}
+
+	public void setAwardNum(int awardNum) {
+		this.awardNum = awardNum;
+	}
+
+	public Date getRefreshDate() {
+		return refreshDate;
+	}
+
+	public void setRefreshDate(Date refreshDate) {
+		this.refreshDate = refreshDate;
 	}
 
 }

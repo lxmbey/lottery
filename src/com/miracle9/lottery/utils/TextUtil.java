@@ -8,7 +8,7 @@ import java.util.Random;
 
 public class TextUtil {
 	private static String str = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM0123456789";
-	private static Random random = new Random();
+	public static Random random = new Random();
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 	/**

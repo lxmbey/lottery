@@ -24,7 +24,7 @@ public class GameController {
 	 * 开奖类型
 	 */
 	public enum AwardType {
-		NOT(-1), BIG(0), ONE(1), TWO(2), THREE(3), FOUR(4), FIVE(5);
+		NOT(0),TWO(1), FIVE(2);
 		private int value;
 
 		private AwardType(int value) {
@@ -61,21 +61,46 @@ public class GameController {
 	 * @return int
 	 */
 	public synchronized int draw() {
-		for (AwardConfig w : AwardConfigService.awardMap.values()) {
-			Long time = AwardConfigService.awardTime.get(w.getAwardType());
-			if (isFirstDay()) {
-				if (System.currentTimeMillis() - time >= w.getFirstDayinterval()) {
-					AwardConfigService.awardTime.put(w.getAwardType(), System.currentTimeMillis());
-					return w.getAwardType();
-				}
-			} else {
-				if (System.currentTimeMillis() - time >= w.getOtherDayinterval()) {
-					AwardConfigService.awardTime.put(w.getAwardType(), System.currentTimeMillis());
-					return w.getAwardType();
-				}
+		long interval = getInterval();
+		if(interval == 0){
+			return AwardType.NOT.value;
+		}
+		if (System.currentTimeMillis() - AwardConfigService.awardTime >= interval) {
+			AwardConfigService.awardTime = System.currentTimeMillis();
+			return randomAward();
+		}
+		return AwardType.NOT.value;
+	}
+	
+	public int randomAward(){
+		int i = 92;
+		if(TextUtil.random.nextInt(i) <2){
+			return AwardType.FIVE.value;
+		}
+		return AwardType.TWO.value;
+	}
+	
+	/**
+	 * 获取出奖间隔
+	 * @return
+	 */
+	private long getInterval(){
+		int hour = TextUtil.getCurrentHour();
+		long interval = 0;
+		if (isFirstDay()) {
+			if(hour>=9 && hour<11){
+				interval = 20000;
+			}else if(hour>=11&&hour<23){
+				interval = 6000;
+			}
+		} else {
+			if(hour>=9 && hour <10){
+				interval = 15000;
+			}else if(hour>=10&&hour<15){
+				interval = 8333;
 			}
 		}
-		return -1;
+		return interval;
 	}
 
 	/**
@@ -84,18 +109,8 @@ public class GameController {
 	 * @param awardType
 	 */
 	public synchronized void repayAward(int awardType) {
-		for (AwardConfig w : AwardConfigService.awardMap.values()) {
-			if (w.getAwardType() != awardType) {
-				continue;
-			}
-			Long time = AwardConfigService.awardTime.get(w.getAwardType());
-			if (isFirstDay()) {
-				AwardConfigService.awardTime.put(w.getAwardType(), time - w.getFirstDayinterval());
-			} else {
-				AwardConfigService.awardTime.put(w.getAwardType(), time - w.getOtherDayinterval());
-			}
-			break;
-		}
+		long interval = getInterval();
+		AwardConfigService.awardTime = AwardConfigService.awardTime - interval;
 	}
 
 	private boolean isFirstDay() {
