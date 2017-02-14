@@ -199,7 +199,6 @@ public class LotteryController {
 
 			ticket = cache.get("ticket");
 		}
-		LogManager.info("ticket=" + ticket.value);
 		String nonceStr = TextUtil.getStr(16);
 		long timestamp = System.currentTimeMillis() / 1000;
 		String signStr = "jsapi_ticket=" + ticket.value + "&noncestr=" + nonceStr + "&timestamp=" + timestamp + "&url="
@@ -254,8 +253,8 @@ public class LotteryController {
 		String tokenJson = HttpUtil.sendPost(getTokenUrl, param);
 		if (tokenJson != "") {
 			JSONObject jo = JSONObject.fromObject(tokenJson);
-			String openid = jo.getString("openid");
-			if (openid != null && !AuthorizeLogService.openidCacheMap.containsKey(openid)) {
+			String openid = jo.optString("openid");
+			if (StringUtils.isNotBlank(openid) && !AuthorizeLogService.openidCacheMap.containsKey(openid)) {
 				AuthorizeLog log = new AuthorizeLog(jo.getString("openid"), new Date(), "", 3);
 				authorizeLogService.add(log);
 				AuthorizeLogService.openidCacheMap.put(openid, log);
